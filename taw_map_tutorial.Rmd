@@ -1,5 +1,5 @@
 ---
-title: "Mapping Transgender Rights R Studio"
+title: "Mapping Transgender Rights With R Studio"
 author: "Aditya Ranganath"
 date: "11/10/2024"
 output:
