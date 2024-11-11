@@ -20,7 +20,7 @@ In this tutorial, we'll explore how to use R Studio to make basic maps that allo
 
 Williamson, Myles. 2024. "A Global Analysis of Transgender Rights: Introducing the Trans Rights Indicator Project (TRIP)". *Perspectives on Politics* 22(3): 799-818. [https://doi.org/10.1017/S1537592723002827](https://doi.org/10.1017/S1537592723002827)
 
-In the tutorial, we will recreate the categorical maps in Figure 3 and Figure 4 of that paper, which display information about whether countries across the world allow for legally recognized gender transitions in 2000 and 2021, respectively. We'll then create a map that shows whether countries have passed broad-based anti-discrimination laws that protect the transgender community and their rights. After that, we'll make another map of an overall index of transgender rights that aggregates information in the dataset into a comprehensive index of how "trans friendly" a country's laws and policies are in the year 2021. Finally, we'll conclude with an exercise in which you will be invited to select a transgender right of interest from the dataset, and create your own map of cross-national variation in that right. 
+In the tutorial, we will recreate the categorical maps in Figure 3 and Figure 4 of that paper, which display information about whether countries across the world allow for legally recognized gender transitions in 2000 and 2021, respectively. We'll then create a map that shows whether countries have passed broad-based anti-discrimination laws that protect the transgender community and their rights. After that, we'll make another map of an overall index of transgender rights that aggregates information in the dataset into a comprehensive index of how "trans friendly" a country's laws and policies are in the year 2021. Finally, we'll conclude with an exercise in which you will be invited to select a transgender right of interest from the dataset, and create your own map of cross-national variation in protections for that right. 
 
 # Preliminaries
 
@@ -28,11 +28,10 @@ In the tutorial, we will recreate the categorical maps in Figure 3 and Figure 4 
 
 R is an open-source programming language for statistical computing that allows users to carry out a wide range of data analysis and visualization tasks (among other things). One of the big advantages of using R is that it has a very large user community among social scientists and statisticians, who frequently publish R packages. One might think of packages as workbooks of sorts, which contain a well-integrated set of R functions, scripts, data, and documentation; these “workbooks” are designed to facilitate certain tasks or implement given procedures. These packages are then shared with the broader community, and at this point, anyone who needs to accomplish the tasks to which the package addresses itself can use the package in the context of their own projects. The ability to use published packages considerably simplifies the work of applied social scientists using R; it means that they rarely have to write code entirely from scratch, and can build on the code that others have published in the form of packages. This allows applied researchers to focus on substantive problems, without having to get too bogged down in complicated programming tasks.
 
-In the context of this tutorial, generating choropleth maps based on the World Development Indicators (WDI) data would be relatively complex if we had to write all our code from scratch. However, because we are able to make use of mapping and visualization packages written by other researchers, the task is considerably simpler, and will not require any complicated programming.
+In the context of this tutorial, generating maps of transgender rights based on a published tabular dataset would be quite complex if we had to write all our code from scratch. However, because we are able to make use of mapping and visualization packages written by other researchers, the task is considerably simpler, and will not require any complicated programming.
 
 In order to process our data and make our maps, we will use a variety of packages. They are:
 
-* *WDI*: It is possible to download our WDI variable of choice directly from the World Bank's WDI [website](https://datatopics.worldbank.org/world-development-indicators/) (see the "Access Data" section), but there is an R package, entitled *WDI*, that allows users to directly query and extract WDI data without leaving R. Since this is more convenient than downloading the dataset and then loading it into R, we will use the *WDI* package to extract the WDI series of our choice. 
 * *sf*: The sf package allows us to work with spatially explicit data in R. In particular, it allows us to work with "sf" objects. "sf" stands for "simple features", and is a data structure that is able to store and display geospatial vector data. Vector data is one of the two main types of GIS data (along with raster data), and we'll discuss it in more detail next class. 
 * *tmap*: The *tmap* package will allow us to create and customize our map. It has become one of the major R mapping packages in use today. There are other package that facilitate mapping in R. One prominent alternative to *tmap*, which many of you may be familiar with, is *ggplot2*. However, while *tmap* uses very similar syntax to *ggplot2*, the former is a dedicated mapping package, while the latter is a more general-purpose visualization package. In my experience, *tmap* is slightly more intuitive and user-friendly, so we will use it instead of *ggplot2* in this tutorial.
 * *rnaturalearth* and *rnaturalearthdata*:  In order to visualize our data on a world map, we need a spatial dataset of the world’s country boundaries. One way to get such a dataset is to download it from a public repository, and then load it into R Studio. However, these packages allow us to load a spatial dataset of world boundaries into R Studio as sf objects without having to actually download anything, which effectively saves us a few steps in the workflow.
@@ -104,6 +103,8 @@ Now that we've taken care of these preliminary steps, let's go ahead and load ou
 
 # Load, explore, and process the spatial dataset of country boundaries
 
+Before turning again to the global dataset of transgender rights from TRIP (which we introduced earlier), we will first load a spatial dataset of country boundaries into R, and learn how to work with such datasets. After that, we'll return to the TRIP data, and learn how to join this data to the spatial dataset of country boundaries, which will us to subsequently visualize the TRIP data on a global map. 
+
 ## Load the spatial dataset of country boundaries into R and assign it to a new object
 
 When working with spatial data in R, we will sometimes want to import data that is stored on our computer. There are several functions in the sf package that will allow us to easily import saved or downloaded spatial data into R; the most commonly used ```sf``` package function to load saved spatial vector data into R is the ```st_read()``` function. For more details, please consult the ```st_read()``` function's documentation by typing ```?st_read()```. 
@@ -150,11 +151,11 @@ To observe the information in the "geometry" column more clearly, we can extract
 country_boundaries$geometry
 ```
 
-Note that extracting the "geometry" column prints some useful metadata; it tells us that the dataset has 241 features, and that it represents spatial information as polygons (geometry type: MULTIPOLYGON). It also provides information on the datasets bounding box ("bbox") and coordinate reference system ("CRS"). We'll unpack this information a bit more next class, but for now, what is important to notice is that the "geometry" column is comprised of multiple geographic coordinates for each row; we can use this information in the “geometry” column to draw georeferenced polygons for each row in the spatial dataset, which will yield a world map! 
+Note that extracting the "geometry" column prints some useful metadata; it tells us that the dataset has 241 features, and that it represents spatial information as polygons (geometry type: MULTIPOLYGON). It also provides information on the dataset's coordinate reference system ("CRS"). Roughly speaking, coordinate reference systems provide information on how actual locations on the Earth correspond to points on a two-dimensional map. They are a crucial concept to understand when carrying out geospatial analysis, but we won't go into coordinate reference systems in detail, since you won't need an in-depth understanding of them for basic cartography. For now, what is important to notice is that the "geometry" column is comprised of multiple geographic coordinates for each row (which corresponds to a distinct country); we can use this information in the “geometry” column to draw georeferenced polygons for each country/row in the spatial dataset, which will yield a world map! 
 
 ## Use information from the "geometry" column to render a map
 
-To translate the information in the "geometry" column of the dataset into a cartographic representation, we’ll use the *tmap* package. In particular, we’ll use the ```tm_shape``` and ```tm_polygons``` functions from *tmap*, which are connected by a plus sign (+). The argument passed to the ```tm_shape``` function is the name of the object associated with the spatial dataset (```country_boundaries```, defined above). In addition, the tm_polygons function indicates that the spatial data is to be represented using polygons (as opposed to alternatives such as lines or points), and does not require any arguments (we'll add some optional arguments to customize the map's appearance in just a bit). When we type in and run the following code from our script, the result is a map that is rendered based on the information in the “geometry” column of country_boundaries:
+To translate the information in the "geometry" column of the dataset into a cartographic representation, we’ll use the *tmap* package. In particular, we’ll use the ```tm_shape``` and ```tm_polygons``` functions from *tmap*, which are connected by a plus sign (+). The argument passed to the ```tm_shape``` function is the name of the object associated with the spatial dataset (```country_boundaries```, defined above). In addition, the ```tm_polygons``` function indicates that the spatial data is to be represented using polygons (as opposed to alternatives such as lines or points), and does not require any arguments (we'll add some optional arguments to customize the map's appearance in just a bit). When we type in and run the following code from our script, the result is a map that is rendered based on the information in the “geometry” column of country_boundaries:
 
 ```{r, fig.asp=0.5}
 # maps geographic features (i.e. countries) of "country_boundaries" as polygons using tmap package functions
@@ -182,7 +183,7 @@ tm_shape(country_boundaries)+
 
 Just as we can assign datasets or numeric values to objects, so too with maps. For example, let's say we want to assign the orange world map we generated above to an object named ```world_map_orange```:
 
-```{r}
+```{r, fig.asp=0.5}
 # assigns dark orange world map to object named "world_map_orange"
 world_map_orange<-tm_shape(country_boundaries)+
                       tm_polygons("darkorange")
@@ -255,6 +256,17 @@ tm_shape(country_boundaries)+
 
 Notice that Antarctica is no longer mapped, since the Antarctica record is no longer in the 
 ```country_boundaries``` object that contains the underlying data. 
+
+
+# Read in the TRIP dataset on transgender rights
+
+Now that we loaded and explored our world map, it's time to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. 
+
+working directory...
+
+
+
+
 
 # Use the *WDI* package to extract the development indicator to be mapped
 
