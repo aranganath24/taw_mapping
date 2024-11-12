@@ -24,6 +24,12 @@ In the tutorial, we will recreate the categorical maps in Figure 3 and Figure 4 
 
 # Preliminaries
 
+## Download data and set working directory
+
+Please download the transgender rights datasets and associated codebook from the [TRIP website](https://www.myleswilliamson.net/trip-data) to your computer. You should download the materials to a directory that you created specifically for this workshop. Note that the when downloaded, the file names contain spaces; file names with spaces can cause problems when reading them into R, so please modify the file name of the specific dataset we'll work with, i.e. "Trip Scores.xlsx" so that it doesn't have any spaces; the most straightforward option would be to change the file name to "TripScores.xlsx". 
+
+Once you've downloaded the materials from TRIP into a directory dedicated to this workshop and changed the file name of the dataset we'll work with to remove spaces ("Trip Scores.xlsx" to "TripScores.xlsx"), please set this directory as your working directory in R. Essentially, a working directory is the location on your computer where R will look for files to read in, as well as the location where it will export files from R. To check your current working directory, you can use the ```getwd()``` function, which will print the file path to your console. If you are familiar with the concept of a file path, you can pass the path to the directory which contains the workshop data as an argument to the ```setwd()``` function in order to set it as your working directory, i.e. ```setwd("filepath")```. However, if you are unfamiliar with the idea of the working directory, it would be easier to set your working directory using the R Studio menu. To do so, click the **Session** menu, scroll down to **Set Working Directory**, and then click **Choose Directory**. You will then be taken to a menu where you can select the directory which you would like to designate as your working directory.
+
 ## Install packages
 
 R is an open-source programming language for statistical computing that allows users to carry out a wide range of data analysis and visualization tasks (among other things). One of the big advantages of using R is that it has a very large user community among social scientists and statisticians, who frequently publish R packages. One might think of packages as workbooks of sorts, which contain a well-integrated set of R functions, scripts, data, and documentation; these “workbooks” are designed to facilitate certain tasks or implement given procedures. These packages are then shared with the broader community, and at this point, anyone who needs to accomplish the tasks to which the package addresses itself can use the package in the context of their own projects. The ability to use published packages considerably simplifies the work of applied social scientists using R; it means that they rarely have to write code entirely from scratch, and can build on the code that others have published in the form of packages. This allows applied researchers to focus on substantive problems, without having to get too bogged down in complicated programming tasks.
@@ -61,6 +67,7 @@ library(tmap)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(tidyverse)
+library(readxl)
 library(grid)
 ```
 
@@ -260,13 +267,13 @@ Notice that Antarctica is no longer mapped, since the Antarctica record is no lo
 
 # Read in the TRIP dataset on transgender rights
 
-Now that we loaded and explored our world map, it's time to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. 
+Now that we loaded and explored our world map, it's time to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. You should have already downloaded the data to a dedicated workshop directory, changed the filename of the dataset we'll be working with, and set the dedicated workshop directory as your R working directory. At this point, we can use the ```read_excel()``` function (since the dataset is an Excel file) to read in the "TRIPScores.xlsx" dataset into R and assign it to an object, which we'll name ```trips```:
 
-working directory...
-
-
-
-
+```{r, echo=-1}
+setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/data")
+# read in the "TRIPScores.xlsx" Excel file from the working directory into R Studio using the "read_excel()" function and assign it to a new object named "trips" 
+trips<-read_excel("TRIPScores.xlsx") 
+```
 
 # Use the *WDI* package to extract the development indicator to be mapped
 
