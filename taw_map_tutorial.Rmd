@@ -264,7 +264,6 @@ tm_shape(country_boundaries)+
 Notice that Antarctica is no longer mapped, since the Antarctica record is no longer in the 
 ```country_boundaries``` object that contains the underlying data. 
 
-
 # Read in the TRIP dataset on transgender rights
 
 Now that we loaded and explored our world map, it's time to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. You should have already downloaded the data to a dedicated workshop directory, changed the filename of the dataset we'll be working with, and set the dedicated workshop directory as your R working directory. At this point, we can use the ```read_excel()``` function (since the dataset is an Excel file) to read in the "TRIPScores.xlsx" dataset into R and assign it to an object, which we'll name ```trips```:
@@ -274,6 +273,46 @@ setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/data")
 # read in the "TRIPScores.xlsx" Excel file from the working directory into R Studio using the "read_excel()" function and assign it to a new object named "trips" 
 trips<-read_excel("TRIPScores.xlsx") 
 ```
+
+```{r, eval=F}
+View(trips)
+```
+
+```{r}
+# filter by year to get 2021 data
+trips_2021<-trips %>% filter(year==2021)
+```
+
+
+```{r}
+# Joins "trips_2021" to "country_boundaries" using 3-digit ISO codes; these ISO codes are contained in a column named "iso_a3" in "country_boundaries", and "country_text_id" in "trips_2021"; the product of the join is assigned to a new object that is named "trips_2021_spatial"
+trips_2021_spatial<-left_join(country_boundaries, trips_2021,
+                                    by=c("iso_a3"="country_text_id"))
+```
+
+```{r}
+# makes categorical map
+gmc_2021_map<-tm_shape(trips_2021_spatial)+
+                tm_polygons(col="gmc",
+                            style="cat",
+                            title="Rights Status",
+                            palette=c("orangered1", "white"),
+                            textNA="No Data",
+                            labels=c("Gender Change Not Recognized", "Gender Change Recognized"))+
+                tm_layout(frame=FALSE,
+                          legend.outside=TRUE,
+                          main.title="Legal Recognition for Gender Change")
+
+gmc_2021_map
+```
+
+
+
+
+view data 
+filter by year
+join datasets
+make map
 
 # Use the *WDI* package to extract the development indicator to be mapped
 
