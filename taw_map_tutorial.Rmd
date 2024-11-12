@@ -243,10 +243,10 @@ To delete Antarctica from the map, we first need to delete the row that correspo
 
 ```{r}
 # Deletes Antarctica from "country_boundaries"
-country_boundaries<-country_boundaries %>% filter(iso_a3 !="ATA")
+country_boundaries_modified<-country_boundaries %>% filter(iso_a3 !="ATA")
 ```
 
-We can translate the code above into ordinary language as follows: “Take the existing country boundaries dataset (```country_boundaries``` to the left of the ```%>%``` and to the right of the assignment operator) and then (```%>%```, a symbol called a pipe, which is used to chain together code) select only the countries that are not Antarctica (```filter(iso_a3 !="ATA"```). Take this amended (sans Antarctica) spatial dataset, and assign it back to an object named ```country_boundaries``` (```country_boundaries<-```); this assignment effectively overwrites the previous dataset that was assigned to country_boundaries (which did include Antarctica) with the amended (sans-Antarctica) dataset.”
+We can translate the code above into ordinary language as follows: “Take the existing country boundaries dataset (```country_boundaries``` to the left of the ```%>%``` and to the right of the assignment operator) and then (```%>%```, a symbol called a pipe, which is used to chain together code) select only the countries that are not Antarctica (```filter(iso_a3 !="ATA"```). Take this amended (sans Antarctica) spatial dataset, and assign it back to a new object named ```country_boundaries_modified``` (```country_boundaries_modified<-```). 
 
 Two things may require additional elaboration:
 
@@ -256,13 +256,22 @@ Two things may require additional elaboration:
 Now, let's go ahead and map the revised ```country_boundaries``` object:
 
 ```{r}
-# maps updated "country_boundaries" object
+# maps updated "country_boundaries_modified" object
+tm_shape(country_boundaries_modified)+
+  tm_polygons()
+```
+
+Notice that Antarctica is no longer mapped, since the Antarctica record is not in the 
+```country_boundaries_modified``` object that contains the underlying data. 
+
+However, Antarctica is still in the ```country_boundaries``` object, which we can confirm witht the following:
+
+```{r}
+# maps "country_boundaries" object
 tm_shape(country_boundaries)+
   tm_polygons()
 ```
 
-Notice that Antarctica is no longer mapped, since the Antarctica record is no longer in the 
-```country_boundaries``` object that contains the underlying data. 
 
 # Read in the TRIP dataset on transgender rights
 
@@ -289,6 +298,7 @@ trips_2021<-trips %>% filter(year==2021)
 trips_2021_spatial<-left_join(country_boundaries, trips_2021,
                                     by=c("iso_a3"="country_text_id"))
 ```
+
 
 ```{r}
 # makes categorical map
