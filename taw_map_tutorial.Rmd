@@ -364,8 +364,43 @@ gmc_2021_map_replication<-tm_shape(trips_2021_spatial)+
 gmc_2021_map_replication
 ```
 
+## Modify the color scheme of ```gmc_2021_map_replication```
+
+```{r}
+transgender_rights_overall_map<-tm_shape(trips_2021_spatial)+
+                                    tm_polygons(col="trip_score",
+                                                title="TRIP Score",
+                                                breaks=c(0, 3, 8.01, 13.01),
+                                    labels=c("Minimal Protections", "Moderate Protections", "Robust Protections"),
+                                    palette=c("lightgreen", "mediumpurple", "purple4"),
+                                    colorNA="white",
+                                    textNA="No Data")+
+                        tm_layout(frame=FALSE,
+                          legend.outside=TRUE,
+                          legend.text.size=0.6,
+                          main.title="Legal Protections for Transgender Rights",
+                          main.title.size = 0.8,
+                          main.title.position = 0.2,
+                          inner.margins=c(0.06, 0.1, 0.1, 0.08))            
+                    
+```
 
 
+```{r, fig.asp=0.5, out.width="200%", out.height="200%"}
+# prints "transgender_rights_overall_map"
+transgender_rights_overall_map
+```
+
+
+# Create a map using the overall index of transgender rights in 2021
+
+```{r}
+
+```
+
+8-13-->high
+4-8-->moderate
+0-3-->low
 
 
 ```{r}
