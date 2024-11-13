@@ -264,9 +264,9 @@ tm_shape(country_boundaries_modified)+
 Notice that Antarctica is no longer mapped, since the Antarctica record is not in the 
 ```country_boundaries_modified``` object that contains the underlying data. 
 
-However, Antarctica is still in the ```country_boundaries``` object, which we can confirm witht the following:
+However, Antarctica is still in the ```country_boundaries``` object, which we can confirm with the following:
 
-```{r}
+```{r, fig.asp=0.45}
 # maps "country_boundaries" object
 tm_shape(country_boundaries)+
   tm_polygons()
@@ -299,6 +299,34 @@ trips_2021_spatial<-left_join(country_boundaries, trips_2021,
                                     by=c("iso_a3"="country_text_id"))
 ```
 
+```{r}
+# replicates gmc map from paper
+gmc_2021_map_replication<-tm_shape(trips_2021_spatial)+
+                tm_polygons(col="gmc",
+                            style="cat",
+                            title="",
+                            palette=c("grey90", "grey70"),
+                            colorNA="white",
+                            textNA="No Data",
+                            labels=c("Not possible/specified", "Possible, de jure"))+
+                tm_layout(frame=FALSE,
+                          legend.outside=TRUE,
+                          legend.text.size=0.6,
+                          main.title="National Laws allowing legal gender marker change, 2021",
+                          main.title.size = 0.8,
+                          main.title.position = 0.2,
+                          inner.margins=c(0.06, 0.1, 0.1, 0.08))
+```
+
+```{r, fig.asp=0.45, out.width="200%", out.height="200%"}
+# prints "gmc_2021_map_replication"
+gmc_2021_map_replication
+```
+
+
+
+
+
 
 ```{r}
 # makes categorical map
@@ -315,9 +343,6 @@ gmc_2021_map<-tm_shape(trips_2021_spatial)+
 
 gmc_2021_map
 ```
-
-
-
 
 view data 
 filter by year
