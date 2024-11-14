@@ -394,19 +394,21 @@ As an additional exercise, see if you can modify the color scheme in the map you
 ```{r}
 transgender_rights_overall_map<-tm_shape(trips_2021_spatial)+
                                     tm_polygons(col="trip_score",
-                                                title="TRIP Score",
-                                                breaks=c(0, 3, 8.01, 13.01),
-                                    labels=c("Minimal Protections", "Moderate Protections", "Robust Protections"),
-                                    palette=c("lightgreen", "mediumpurple", "purple4"),
-                                    colorNA="white",
-                                    textNA="No Data")+
-                        tm_layout(frame=FALSE,
-                          legend.outside=TRUE,
-                          legend.text.size=0.6,
-                          main.title="Legal Protections for Transgender Rights",
-                          main.title.size = 0.8,
-                          main.title.position = 0.2,
-                          inner.margins=c(0.06, 0.1, 0.1, 0.08))            
+                                                title="",
+                                                breaks=c(0, 3.01, 8.01, 13.01),
+          labels=c("Minimal Protections (TRIP<=3)", "Moderate Protections (3<TRIP<=8)", "Robust Protections (TRIP>8)"),
+                                                palette=c("lightgreen", "mediumpurple", "purple4"),
+                                                colorNA="white",
+                                                textNA="No Data")+
+                                    tm_layout(frame=FALSE,
+                                              legend.outside=TRUE,
+                                              legend.text.size=0.4,
+                                            main.title="Legal Protections for Transgender Rights, based on TRIP Score",
+                                              main.title.size = 0.8,
+                                              main.title.position = 0.2,
+                                            attr.outside = TRUE,
+                                              inner.margins=c(0.06, 0.1, 0.1, 0.08))+
+          tm_credits("Map Author: Aditya Ranganath\nData Source: Myles Williamson/TRIP", position=c(0.02,0.01), size=0.38)
                     
 ```
 
@@ -422,24 +424,18 @@ Finally, once we have made our map(s) in R Studio, and everything looks satisfac
 
 One easy way to export your maps is to use the "Export" button within the "Plots" window of your R Studio interface. Once you click on the "Export" button, things are fairly self-explanatory; you click through a few menus, and can save (to a specified location on your computer) the map displayed in the "Plots" window as a PDF or as an image file. 
 
-If you prefer to export your map programmatically (which may be preferable, from a reproducibility standpoint), you have a few options. The easiest programmatic option is to use the ```tmap_save``` function, which is a part of *tmap*. For example, recall the map assigned to ```gmc_2000_map_replication```, which was a replication of Figure 3 in the paper; if you need to refresh your memory, it looks like this:
-
-```{r, warning=F, message=F, fig.asp=0.45, out.width="200%", out.height="200%"}
-gmc_2000_map_replication
-```
-
-Now, let's export this map using the following code:
+If you prefer to export your map programmatically (which may be preferable, from a reproducibility standpoint), you have a few options. The easiest programmatic option is to use the ```tmap_save``` function, which is a part of *tmap*. For example, recall the map assigned to ```transgender_rights_overall_map```, which we created in the previous section. Now, let's export this map using the following code:
 
 ```{r, echo=-1, warning=F}
 setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/exported_maps")
 # exports map assigned to "trade_map_2015_custom_breaks" object to working directory as PDF file
-tmap_save(tm=gmc_2000_map_replication, 
-          filename="trip_gmc_map_2000.pdf", 
+tmap_save(tm=transgender_rights_overall_map, 
+          filename="transgender_rights_overall_map.pdf", 
           width=1920, 
           height=1080)
 ```
 
-Above, the first argument to ```tmap_save``` is the name of the map object we want to export (```gmc_2000_map_replication```), the second argument is the file name we want to use for the exported file (along with the desired extension), and the "width" and "height" arguments specify the dimensions of the exported map. When this code is run, the map is exported to your working directory. Note that if we wanted our map as an image file, we could have simply specified a different file extension (i.e. .png instead of .pdf). It's best to experiment with different parameters for the "width" and "height" arguments until you get the exported map looking the way you want. There are other potential arguments to ```tmap_save()``` that allow you to further customize your exported map; we won't review them here, but you can learn more by looking at the function's documentation by typing```?tmap_save()```. 
+Above, the first argument to ```tmap_save``` is the name of the map object we want to export (```transgender_rights_overall_map```), the second argument is the file name we want to use for the exported file (along with the desired extension), and the "width" and "height" arguments specify the dimensions of the exported map. When this code is run, the map is exported to your working directory. Note that if we wanted our map as an image file, we could have simply specified a different file extension (i.e. .png instead of .pdf). It's best to experiment with different parameters for the "width" and "height" arguments until you get the exported map looking the way you want. There are other potential arguments to ```tmap_save()``` that allow you to further customize your exported map; we won't review them here, but you can learn more by looking at the function's documentation by typing```?tmap_save()```. 
 If you want to export a map with an inset, you will need to specify the name of the inset map object, and the viewport specifications. 
 
 # Appendix
