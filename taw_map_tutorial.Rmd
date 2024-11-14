@@ -273,9 +273,11 @@ tm_shape(country_boundaries)+
 
 # Replicate published maps
 
+In this section, we'll replicate the maps in the [TRIP paper](https://doi.org/10.1017/S1537592723002827), specifically, the maps associated with Figures 3 and 4. We'll replicate Figure 3 together, and you'll replicate Figure 4 on your own as an exercise. 
+
 ## Read in the TRIP dataset on transgender rights
 
-Now that we loaded and explored our world map, it's time to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. You should have already downloaded the data to a dedicated workshop directory, changed the filename of the dataset we'll be working with, and set the dedicated workshop directory as your R working directory. At this point, we can use the ```read_excel()``` function (since the dataset is an Excel file) to read in the "TRIPScores.xlsx" dataset into R and assign it to an object, which we'll name ```trips```:
+Now that we loaded and explored our world map, the first step to making the map of countries that permit gender marker changes on the national level is to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. You should have already downloaded the data to a dedicated workshop directory, changed the filename of the dataset we'll be working with, and set the dedicated workshop directory as your R working directory. At this point, we can use the ```read_excel()``` function (since the dataset is an Excel file) to read in the "TRIPScores.xlsx" dataset into R and assign it to an object, which we'll name ```trips```:
 
 ```{r, echo=-1}
 setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/data")
@@ -283,16 +285,27 @@ setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/data")
 trips<-read_excel("TRIPScores.xlsx") 
 ```
 
+Now, please use the R Studio data viewer to view the dataset. When viewing the dataset, it could be useful to consult the data codebook that you downloaded along with the data to help interpret and understand the various variables. 
+
 ```{r, eval=F}
+# View trips dataset in data viewer
 View(trips)
 ```
 
 ## Create a Map of GMC Laws in 2000
 
+Now, we're ready to make our map. Since the map we're trying to recreate plots data from the year 2000, we'll first use the ```filter()``` function to extract year 2000 observations from the ```trips``` dataset, and then assign this new dataset containing only year 2000 observations to a new object named ```trips_2000```:
+
 ```{r}
-# filter by year to get 2000 data
+# filter by year to get 2000 data from "trips" and assign the result to a new object named "trips_2000"
 trips_2000<-trips %>% filter(year==2000)
 ```
+
+Now that we have our spatial dataset (```country_boundaries```) and a dataset of transgender rights from the year 2000 from the TRIP project (```trips_2000```), let's join the latter to the former; once we have our data of interest in a spatially explicit dataset, we will be able to visualize the data on a corresponding map. 
+
+Joining, or “merging” datasets is a very common procedure when working with social science data (or any data for that matter), since data is often held in many different locations, and must typically be brought together into a common dataset before it can be analyzed.
+
+How do we join different datasets together? Associating two datasets into one larger dataset that combines information from both requires the datasets to share a common field; this common field can be used to essentially “glue” the datasets together. The International Organization for Standardization provides 3-digit country codes for each of the world’s countries that can be used to uniquely identify countries when working with country-level data. Both our spatial dataset (```country_boundaries```), and our TRIP dataset (```trips_2000```), contain fields with these standardized 3-digit ISO codes (this field is labelled “iso_a3” in the spatial dataset, and “country_text_id” in ```trips_2000```). We will therefore use the fields containing these 3-digit country codes to join ```trips_2000``` to ```country_boundaries```:
 
 ```{r}
 # Joins "trips_2000" to "country_boundaries" using 3-digit ISO codes; these ISO codes are contained in a column named "iso_a3" in "country_boundaries", and "country_text_id" in "trips_2000"; the product of the join is assigned to a new object that is named "trips_2000_spatial"
@@ -300,9 +313,25 @@ trips_2000_spatial<-left_join(country_boundaries, trips_2000,
                                     by=c("iso_a3"="country_text_id"))
 ```
 
+In the code above, we use the ```left_join()``` function to join ```trips_2000``` to ```country_boundaries```. The ```left_join()``` function keeps all rows (i.e. observations) that are contained in the first dataset passed as an argument to the function (here, ```country_boundaries```) in the final (i.e. joined) dataset. For more information on different join options, explore the documentation by inspecting the function’s documentation (```?left_join()```). Let’s unpack the code which implements the join a bit more:
+
+* The first argument to the ```left_join()``` function is ```country_boundaries```, which is of course our spatial dataset.
+* The second argument, ```trips_2000``` is the tabular dataset containing information on laws regarding gender marker changes, which we want to map. It’s worth noting that when we are joining a tabular dataset to a spatial dataset with a view towards displaying the information contained in the tabular data on a map, the spatial dataset should be listed before the tabular dataset. If we reverse this order (i.e. join the spatial dataset to the tabular dataset rather than the other way around), we’ll have to take some additional steps to get the joined dataset ready to map, and this is best avoided.
+* The third argument specifies the join fields, i.e. the fields within the datasets that contain the common variable that can be used to correlate the records in the two different datasets and weld them together. In our case, the join variable is of course the 3-digit ISO country code. The argument that reads ```by=c("iso_a3"="country_text_id")``` indicates that we want to join the datasets based on the set of country identifiers given by the 3-digit ISO codes; because the name of the column containing the 3-digit codes is different in the two datasets, the expression in the parentheses "iso_a3"="country_text_id" simply indicates that the column named “iso_a3” (in the spatial dataset) and the column named “country_text_id” (in the tabular dataset) are equivalent to each other, and are to be used as the join fields. If they didn’t have different names–for example, if the ISO codes were in a column named “iso” in both datasets–we could simply have written "by=iso" to specify the join column.
+
+At this point, please go ahead and use the data viewer to inspect the joined dataset using the data viewer:
+
+```{r, eval=F}
+# views "trips_2000_spatial" in data viewer
+View(trips_2000_spatial)
+```
+
+
 ```{r, echo=F}
 trips_200_spatial<-trips_2000_spatial %>% relocate(gmc)
 ```
+
+Now, we will use functions from the *tmap* package (chained together with"+" signs) to create our map; we'll assign our map to a new object named ```gmc_2000_map_replication```:
 
 ```{r}
 # replicates 2000 gmc map from paper (figure 3)
@@ -324,6 +353,9 @@ gmc_2000_map_replication<-
                   inner.margins=c(0.06, 0.1, 0.1, 0.08))
 ```
 
+As an exercise, try to decipher what each of the arguments to ```tm_shape()```, ```tm_polygons()```, and ```tm_layout()``` is doing. If you need help, try to inspect the corresponding functions documentation; remember, to inspect a function's documentation by printing a "?" followed by the function's name in the R console. 
+
+Now, let's look at the map that the code above created:
 
 ```{r, fig.asp=0.45, out.width="200%", out.height="200%"}
 # prints "gmc_2000_map_replication"
@@ -392,7 +424,10 @@ As an additional exercise, see if you can modify the color scheme in the map you
 
 # Create a new map that displays an overall index of transgender rights in 2021
 
+Now, let's make a new map (that wasn't previously published in the paper we have been referencing), that maps cross-national variation in the "trip_score" variable in the TRIP dataset. Here, let's map the "trip_score" for the year 2021; make sure to refer to the dataset's codebook so that you know what exactly this variable is capturing. We'll assign our map of the overall TRIP score to a new object named ```transgender_rights_overall_map```. As before, please inspect the code below, and determine what the arguments to the various functions are doing; consult the functions' documentation for assistance, if necessary. 
+
 ```{r}
+# Creates map of "trip_score" for the year 2021
 transgender_rights_overall_map<-
 tm_shape(trips_2021_spatial)+
   tm_polygons(col="trip_score",
@@ -418,6 +453,7 @@ tm_shape(trips_2021_spatial)+
                     
 ```
 
+Now, let's see what the map looks like: 
 
 ```{r, fig.asp=0.5, out.width="200%", out.height="200%"}
 # prints "transgender_rights_overall_map"
