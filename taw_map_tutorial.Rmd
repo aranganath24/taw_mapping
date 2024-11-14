@@ -306,21 +306,22 @@ trips_200_spatial<-trips_2000_spatial %>% relocate(gmc)
 
 ```{r}
 # replicates 2000 gmc map from paper (figure 3)
-gmc_2000_map_replication<-tm_shape(trips_2000_spatial)+
-                tm_polygons(col="gmc",
-                            style="cat",
-                            title="",
-                            palette=c("grey90", "grey70"),
-                            colorNA="white",
-                            textNA="No Data",
-                            labels=c("Not possible/specified", "Possible, de jure"))+
-                tm_layout(frame=FALSE,
-                          legend.outside=TRUE,
-                          legend.text.size=0.6,
-                          main.title="National Laws allowing legal gender marker change, 2000",
-                          main.title.size = 0.8,
-                          main.title.position = 0.2,
-                          inner.margins=c(0.06, 0.1, 0.1, 0.08))
+gmc_2000_map_replication<-
+  tm_shape(trips_2000_spatial)+
+    tm_polygons(col="gmc",
+                style="cat",
+                title="",
+                palette=c("grey90", "grey70"),
+                colorNA="white",
+                textNA="No Data",
+                labels=c("Not possible/specified", "Possible, de jure"))+
+      tm_layout(frame=FALSE,
+                legend.outside=TRUE,
+                 legend.text.size=0.6,
+                  main.title="National Laws allowing legal gender marker change, 2000",
+                  main.title.size = 0.8,
+                  main.title.position = 0.2,
+                  inner.margins=c(0.06, 0.1, 0.1, 0.08))
 ```
 
 
@@ -392,23 +393,28 @@ As an additional exercise, see if you can modify the color scheme in the map you
 # Create a new map that displays an overall index of transgender rights in 2021
 
 ```{r}
-transgender_rights_overall_map<-tm_shape(trips_2021_spatial)+
-                                    tm_polygons(col="trip_score",
-                                                title="",
-                                                breaks=c(0, 3.01, 8.01, 13.01),
-          labels=c("Minimal Protections (TRIP<=3)", "Moderate Protections (3<TRIP<=8)", "Robust Protections (TRIP>8)"),
-                                                palette=c("lightgreen", "mediumpurple", "purple4"),
-                                                colorNA="white",
-                                                textNA="No Data")+
-                                    tm_layout(frame=FALSE,
-                                              legend.outside=TRUE,
-                                              legend.text.size=0.4,
-                                            main.title="Legal Protections for Transgender Rights, based on TRIP Score",
-                                              main.title.size = 0.8,
-                                              main.title.position = 0.2,
-                                            attr.outside = TRUE,
-                                              inner.margins=c(0.06, 0.1, 0.1, 0.08))+
-          tm_credits("Map Author: Aditya Ranganath\nData Source: Myles Williamson/TRIP", position=c(0.02,0.01), size=0.38)
+transgender_rights_overall_map<-
+tm_shape(trips_2021_spatial)+
+  tm_polygons(col="trip_score",
+              title="",
+              breaks=c(0, 3.01, 8.01, 13.01),
+    labels=c("Minimal Protections (TRIP<=3)", 
+             "Moderate Protections (3<TRIP<=8)", 
+             "Robust Protections (TRIP>8)"),
+               palette=c("lightgreen", "mediumpurple", "purple4"),
+               colorNA="white",
+               textNA="No Data")+
+   tm_layout(frame=FALSE,
+             legend.outside=TRUE,
+             legend.text.size=0.4,
+             main.title="Legal Protections for Transgender Rights, based on TRIP Score",
+             main.title.size = 0.8,
+             main.title.position = 0.2,
+             attr.outside = TRUE,
+            inner.margins=c(0.06, 0.1, 0.1, 0.08))+
+   tm_credits("Map Author: Aditya Ranganath\nData Source: Myles Williamson/TRIP", 
+              position=c(0.02,0.01), 
+              size=0.38)
                     
 ```
 
