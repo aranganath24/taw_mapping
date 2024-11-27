@@ -60,7 +60,6 @@ After all the packages are downloaded, we must load them into memory. We can thi
 
 ```{r, message=F, warning=F}
 # Loads required libraries
-library(WDI)
 library(sf)
 library(tmap)
 library(rnaturalearth)
@@ -280,7 +279,7 @@ In this section, we'll replicate the maps in the [TRIP paper](https://doi.org/10
 Now that we loaded and explored our world map, the first step to making the map of countries that permit gender marker changes on the national level is to read in the TRIP dataset on transgender rights into our R environment and assign it to an object. You should have already downloaded the data to a dedicated workshop directory, changed the filename of the dataset we'll be working with, and set the dedicated workshop directory as your R working directory. At this point, we can use the ```read_excel()``` function (since the dataset is an Excel file) to read in the "TRIPScores.xlsx" dataset into R and assign it to an object, which we'll name ```trips```:
 
 ```{r, echo=-1}
-setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/data")
+setwd("data")
 # read in the "TRIPScores.xlsx" Excel file from the working directory into R Studio using the "read_excel()" function and assign it to a new object named "trips" 
 trips<-read_excel("TRIPScores.xlsx") 
 ```
@@ -469,7 +468,7 @@ One easy way to export your maps is to use the "Export" button within the "Plots
 If you prefer to export your map programmatically (which may be preferable, from a reproducibility standpoint), you have a few options. The easiest programmatic option is to use the ```tmap_save``` function, which is a part of *tmap*. For example, recall the map assigned to ```transgender_rights_overall_map```, which we created in the previous section. Now, let's export this map using the following code:
 
 ```{r, echo=-1, warning=F}
-setwd("/Users/adra7980/Documents/git_repositories/taw_mapping/exported_maps")
+setwd("exported_maps")
 # exports map assigned to "trade_map_2015_custom_breaks" object to working directory as PDF file
 tmap_save(tm=transgender_rights_overall_map, 
           filename="transgender_rights_overall_map.pdf", 
