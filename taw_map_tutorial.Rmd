@@ -476,14 +476,14 @@ tmap_save(tm=transgender_rights_overall_map,
           height=1080)
 ```
 
-Above, the first argument to ```tmap_save``` is the name of the map object we want to export (```transgender_rights_overall_map```), the second argument is the file name we want to use for the exported file (along with the desired extension), and the "width" and "height" arguments specify the dimensions of the exported map. When this code is run, the map is exported to your working directory. Note that if we wanted our map as an image file, we could have simply specified a different file extension (i.e. .png instead of .pdf). It's best to experiment with different parameters for the "width" and "height" arguments until you get the exported map looking the way you want. There are other potential arguments to ```tmap_save()``` that allow you to further customize your exported map; we won't review them here, but you can learn more by looking at the function's documentation by typing```?tmap_save()```. 
+In the code above, the first argument to ```tmap_save``` is the name of the map object we want to export (```transgender_rights_overall_map```), the second argument is the file name we want to use for the exported file (along with the desired extension), and the "width" and "height" arguments specify the dimensions of the exported map. When this code is run, the map is exported to your working directory. Note that if we wanted our map as an image file, we could have simply specified a different file extension (i.e. .png instead of .pdf). It's best to experiment with different parameters for the "width" and "height" arguments until you get the exported map looking the way you want. There are other potential arguments to ```tmap_save()``` that allow you to further customize your exported map; we won't review them here, but you can learn more by looking at the function's documentation by typing```?tmap_save()```. 
 If you want to export a map with an inset, you will need to specify the name of the inset map object, and the viewport specifications. 
 
 # Appendix
 
 **Solution to Exercise in Section 5.1** 
 
-To create the map in Section 5.1 (which is a replication of the map in Figure 4 of the TRIPS paper), you could use the following code. 
+To create the map in Section 5.1 (which is a replication of the map in Figure 4 of the TRIPS paper), you could use the following code:
 
 ```{r, fig.asp=0.45, out.width="200%", out.height="200%"}
 # filter by year to get 2021 data
